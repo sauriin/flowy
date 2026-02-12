@@ -64,6 +64,12 @@
   }
 }
 
+@keyframes scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 .animate-scroll {
   animation-name: scroll;
   animation-duration: var(--animation-duration, 40s);

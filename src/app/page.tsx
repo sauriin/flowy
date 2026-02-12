@@ -34,12 +34,14 @@ export default function Home() {
           />
         </div>
       </section>
-      <InfiniteMovingCards
-        className="md:mt-72 -mt-25"
-        items={clients}
-        direction="right"
-        speed="slow"
-      />
+      <div className="w-full px-6">
+        <InfiniteMovingCards
+          className="mt-72"
+          items={clients}
+          direction="right"
+          speed="slow"
+        />
+      </div>
       <section>
         <HeroParallax products={products}></HeroParallax>
       </section>

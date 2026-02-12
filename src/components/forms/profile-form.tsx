@@ -1,69 +1,104 @@
-"use client"
-import { EditUserProfileSchema } from '@/lib/types'
-import { zodResolver } from '@hookform/resolvers/zod'
-import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import z from 'zod'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
-import { Input } from '../ui/input'
-import { Button } from '../ui/button'
-import { Loader2 } from 'lucide-react'
+"use client";
 
-type Props = {}
+import { EditUserProfileSchema } from "@/lib/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import z from "zod";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { Loader2 } from "lucide-react";
 
-function ProfileForm({ }: Props) {
-    const [isLoading, setIsLoading] = useState(false)
+type Props = {
+    user: any;
+    onUpdate: (name: string) => Promise<any>;
+};
+
+export default function ProfileForm({ user, onUpdate }: Props) {
+    const [isLoading, setIsLoading] = useState(false);
 
     const form = useForm<z.infer<typeof EditUserProfileSchema>>({
         mode: "onChange",
         resolver: zodResolver(EditUserProfileSchema),
         defaultValues: {
-            name: "",
-            email: ""
-        }
-    })
+            name: user?.name || "",
+            email: user?.email || "",
+        },
+    });
+
+    const handleSubmit = async (values: z.infer<typeof EditUserProfileSchema>) => {
+        setIsLoading(true);
+        await onUpdate(values.name);
+        setIsLoading(false);
+    };
+
+    useEffect(() => {
+        form.reset({
+            name: user?.name,
+            email: user?.email,
+        });
+    }, [user]);
+
     return (
         <Form {...form}>
-            <form className='flex flex-col gap-6' onSubmit={() => { }}>
-                <FormField
-                    disabled={isLoading}
-                    control={form.control}
-                    name='name'
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel className="text-lg">User full name</FormLabel>
-                            <FormControl>
-                                <Input placeholder='Name'{...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
-                <FormField
-                    disabled={true}
-                    control={form.control}
-                    name='email'
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel className="text-lg">Email</FormLabel>
-                            <FormControl>
-                                <Input placeholder='Email' type='email' disabled {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
-                <Button type='submit' className='self-start bg-white text-black hover:bg-[#6D28D9] hover:text-white'>
-                    {isLoading ? (
-                        <>
-                            <Loader2 className='h-4 w-4 animate-spin' />
-                            Saving
-                        </>
-                    ) : (
-                        'Save User Settings'
-                    )}
-                </Button>
-            </form>
-        </Form>
-    )
-}
+            <div className="w-full overflow-visible">
+                <form
+                    className="flex flex-col gap-6 w-full overflow-visible"
+                    onSubmit={form.handleSubmit(handleSubmit)}
+                >
+                    <FormField
+                        disabled={isLoading}
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="text-lg">User full name</FormLabel>
+                                <FormControl>
+                                    <Input {...field} placeholder="Name" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
 
-export default ProfileForm
+                    <FormField
+                        disabled
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="text-lg">Email</FormLabel>
+                                <FormControl>
+                                    <Input {...field} type="email" disabled />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <Button
+                        type="submit"
+                        className="self-start bg-white text-black hover:bg-[#6D28D9] hover:text-white"
+                    >
+                        {isLoading ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Saving
+                            </>
+                        ) : (
+                            "Save User Settings"
+                        )}
+                    </Button>
+                </form>
+            </div>
+        </Form>
+    );
+}
