@@ -53,7 +53,7 @@ export default function Home() {
             <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-neutral-500/10 dark:bg-black dark:border-white/20 border-black/10 w-full md:w-87.5! h-auto rounded-xl p-6 border">
               <CardItem translateZ="50" className="text-xl font-bold text-neutral-600 dark:text-white">
                 Hobby
-                <h2 className="text-6xl">$0</h2>
+                <h2 className="text-6xl">Free</h2>
               </CardItem>
               <CardItem
                 translateZ="60"
@@ -88,7 +88,7 @@ export default function Home() {
             <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-neutral-500/10 dark:bg-black dark:border-[#E2CBFF] border-black/10 w-full md:w-87.5! h-auto rounded-xl p-6 border">
               <CardItem translateZ="50" className="text-xl font-bold text-neutral-600 dark:text-white">
                 Pro Plan
-                <h2 className="text-6xl">$29</h2>
+                <h2 className="text-6xl">₹2599</h2>
               </CardItem>
               <CardItem
                 translateZ="60"
@@ -123,7 +123,7 @@ export default function Home() {
             <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-neutral-500/10 dark:bg-black dark:border-white/20 border-black/10 w-full md:w-87.5! h-auto rounded-xl p-6 border">
               <CardItem translateZ="50" className="text-xl font-bold text-neutral-600 dark:text-white">
                 Unlimited
-                <h2 className="text-6xl">$99</h2>
+                <h2 className="text-6xl">₹8499</h2>
               </CardItem>
               <CardItem
                 translateZ="60"

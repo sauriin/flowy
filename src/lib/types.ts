@@ -7,6 +7,17 @@ export const EditUserProfileSchema = z.object({
     name: z.string().min(1, "Required"),
 })
 
+export const WorkflowFormSchema = z.object({
+    name: z
+        .string()
+        .min(4, "Name must be at least 4 characters"),
+
+    description: z
+        .string()
+        .min(10, "Description must be at least 10 characters"),
+});
+
+
 export type ConnectionTypes = 'Google Drive' | 'Notion' | 'Slack' | 'Discord'
 
 export type Connection = {
@@ -18,3 +29,4 @@ export type Connection = {
     alwaysTrue?: boolean
     slackSpecial?: boolean
 }
+

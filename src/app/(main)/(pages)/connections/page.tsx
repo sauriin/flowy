@@ -9,6 +9,8 @@ type Props = {
     }
 }
 
+// WIP : Connection need to be done.
+
 const Connections = (props: Props) => {
     return (
         <div className='flex flex-col gap-4'>
