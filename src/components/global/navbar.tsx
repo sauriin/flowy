@@ -55,5 +55,4 @@ const Navbar = async (props: Props) => {
         </header>
     )
 }
-//22:13
 export default Navbar;
