@@ -2,8 +2,6 @@
 import { EditorCanvasTypes, EditorNodeType } from '@/lib/types'
 import { useEditor } from '@/providers/editor-provider'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import React, { useEffect } from 'react'
-import { Separator } from '@/components/ui/separator'
 import { CONNECTIONS, EditorCanvasDefaultCardTypes } from '@/lib/constant'
 import {
     Card,
@@ -11,12 +9,6 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card'
-// import {
-//     fetchBotSlackChannels,
-//     onConnections,
-//     onDragStart,
-// } from '@/lib/editor-utils'
-//import EditorCanvasIconHelper from './editor-canvas-card-icon-hepler'
 import {
     Accordion,
     AccordionContent,
@@ -24,9 +16,11 @@ import {
     AccordionTrigger,
 } from '@/components/ui/accordion'
 import { useNodeConnections } from '@/providers/connection-provider'
-//import RenderConnectionAccordion from './render-connection-accordion'
-//import RenderOutputAccordion from './render-output-accordian'
-//import { useFuzzieStore } from '@/store'
+import { onDragStart } from '@/lib/editor-utils'
+import EditorCanvasIconHelper from './editor-canvas-card-icon-helper'
+import RenderConnectionAccordion from './render-connection-accordion'
+import OutputRenderAccordian from './output-render-accordian'
+
 type Props = {
     nodes: EditorNodeType[]
 }
@@ -37,13 +31,43 @@ const EditorCanvasSidebar = ({ nodes }: Props) => {
     const { state } = useEditor()
     const { nodeConnection } = useNodeConnections()
     return (
-        <aside>
-            <Tabs defaultValue='actions' className='h-screen overflow-scroll pb-24'>
-                <TabsList className='bg-transparent'>
-                    <TabsTrigger value='actions'>Actions</TabsTrigger>
-                    <TabsTrigger value='settings'>Settings</TabsTrigger>
+        <aside className='h-full'>
+            <Tabs
+                defaultValue="actions"
+                className="flex h-full flex-col overflow-hidden"
+            >
+                <TabsList className="w-full bg-transparent p-0 h-12">
+
+                    <TabsTrigger
+                        value="actions"
+                        className="
+      flex-1
+      rounded-none
+      border-b-2
+      border-transparent
+      text-gray-500
+      data-[state=active]:text-white"
+                    >
+                        Actions
+                    </TabsTrigger>
+
+                    <TabsTrigger
+                        value="settings"
+                        className="
+      flex-1
+      rounded-none
+      border-b-2
+      border-transparent
+      text-gray-500
+      data-[state=active]:text-white
+    "
+                    >
+                        Settings
+                    </TabsTrigger>
+
                 </TabsList>
-                <Separator />
+
+                <div className="h-px w-95 justify-center bg-gray-700" />
                 <TabsContent
                     value="actions"
                     className="flex flex-col gap-4 p-4"
@@ -58,12 +82,12 @@ const EditorCanvasSidebar = ({ nodes }: Props) => {
                             <Card
                                 key={cardKey}
                                 draggable
-                                className="w-full cursor-grab border-black bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900"
+                                className="w- cursor-grab w-85 border-black bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900"
                                 onDragStart={(event) =>
                                     onDragStart(event, cardKey as EditorCanvasTypes)
                                 }
                             >
-                                <CardHeader className="flex flex-row items-center gap-4 p-4">
+                                <CardHeader className="flex flex-row gap-4 p-4">
                                     <EditorCanvasIconHelper type={cardKey as EditorCanvasTypes} />
                                     <CardTitle className="text-md">
                                         {cardKey}
@@ -75,7 +99,7 @@ const EditorCanvasSidebar = ({ nodes }: Props) => {
                 </TabsContent>
                 <TabsContent
                     value="settings"
-                    className="-mt-6"
+                    className="flex-1 overflow-y-auto p-4"
                 >
                     <div className="px-2 py-4 text-center text-xl font-bold">
                         {state.editor.selectedNode.data.title}
@@ -84,12 +108,12 @@ const EditorCanvasSidebar = ({ nodes }: Props) => {
                     <Accordion type="multiple">
                         <AccordionItem
                             value="Options"
-                            className="border-y-[1px] px-2"
+                            className="border-y px-2"
                         >
-                            <AccordionTrigger className="!no-underline">
+                            <AccordionTrigger className="no-underline!">
                                 Account
                             </AccordionTrigger>
-                            {/* <AccordionContent>
+                            <AccordionContent>
                                 {CONNECTIONS.map((connection) => (
                                     <RenderConnectionAccordion
                                         key={connection.title}
@@ -97,19 +121,19 @@ const EditorCanvasSidebar = ({ nodes }: Props) => {
                                         connection={connection}
                                     />
                                 ))}
-                            </AccordionContent> */}
+                            </AccordionContent>
                         </AccordionItem>
                         <AccordionItem
                             value="Expected Output"
                             className="px-2"
                         >
-                            <AccordionTrigger className="!no-underline">
+                            <AccordionTrigger className="no-underline!">
                                 Action
                             </AccordionTrigger>
-                            {/* <RenderOutputAccordion
+                            <OutputRenderAccordian
                                 state={state}
                                 nodeConnection={nodeConnection}
-                            /> */}
+                            />
                         </AccordionItem>
                     </Accordion>
                 </TabsContent>
@@ -119,4 +143,3 @@ const EditorCanvasSidebar = ({ nodes }: Props) => {
 }
 
 export default EditorCanvasSidebar
-// 4 07 25

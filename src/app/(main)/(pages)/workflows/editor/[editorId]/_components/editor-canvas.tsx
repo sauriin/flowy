@@ -27,7 +27,7 @@ import { toast } from 'sonner'
 import { usePathname } from 'next/navigation'
 import { v4 } from 'uuid'
 import FlowInstance from './flow-instance'
-import EditorCanvasSidebar from '../../../_components/editor-canvas-sidebar'
+import EditorCanvasSidebar from './editor-canvas-sidebar'
 
 type Props = {}
 
@@ -174,15 +174,18 @@ const EditorCanvas = (props: Props) => {
     }, [])
 
     return (
-        <ResizablePanelGroup orientation="horizontal">
-            <ResizablePanel defaultSize={70}>
+        <ResizablePanelGroup
+            orientation="horizontal"
+            className="h-screen w-full overflow-hidden"
+        >
+            <ResizablePanel defaultSize={75} className="h-full overflow-hidden">
                 <div className="h-full w-full">
-                    <div className="relative h-full w-full min-h-[600px]">
+                    <div className="relative h-full w-full min-h-150">
                         <ReactFlow
                             className="w-75"
                             onDrop={onDrop}
                             onDragOver={onDragOver}
-                            nodes={state.editor.elements}
+                            nodes={nodes}
                             onNodesChange={onNodesChange}
                             edges={edges}
                             onEdgesChange={onEdgesChange}
@@ -195,7 +198,7 @@ const EditorCanvas = (props: Props) => {
                             <Controls position="top-left" />
                             <MiniMap
                                 position="bottom-left"
-                                className="bg-background"
+                                className=" bg-black"
                                 zoomable
                                 pannable
                             />
@@ -211,11 +214,11 @@ const EditorCanvas = (props: Props) => {
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel
-                defaultSize={40}
-                className="relative sm:block"
+                defaultSize={25}
+                className="h-full overflow-hidden"
             >
                 {false ? (
-                    <div className="absolute flex h-full w-full items-center justify-center">
+                    <div className="absolute flex h-full w-full justify-center">
                         <svg
                             aria-hidden="true"
                             className="inline h-8 w-8 animate-spin fill-blue-600 text-gray-200 dark:text-gray-600"
@@ -250,5 +253,3 @@ const EditorCanvas = (props: Props) => {
 }
 
 export default EditorCanvas
-
-//3hr 54min 27sec

@@ -32,7 +32,7 @@ const EditorCanvasCardSingle = ({ data }: { data: EditorCanvasCardType }) => {
                         }
                     })
             }}
-                className='relative max-w-120 dark:border-muted-foreground/70 '
+                className='relative w-100 dark:border-muted-foreground/70 wrap-break-words'
             >
                 <CardHeader className='flex flex-row items-center gap-4'>
                     <div>{logo}</div>

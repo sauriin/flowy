@@ -34,12 +34,36 @@ const FlowInstance = ({ children, edges, nodes }: Props) => {
     return (
         <div className='flex flex-col gap-2'>
             <div className='flex gap-3 p-4'>
-                <Button onClick={onFlowAutomation} disabled={isFlow.length < 1}>
+                <Button
+                    onClick={onFlowAutomation}
+                    disabled={isFlow.length < 1}
+                    className="
+                    bg-neutral-800
+                    text-white
+                    hover:bg-neutral-700
+                    disabled:bg-neutral-800/40
+                    disabled:text-white/50
+                    disabled:cursor-not-allowed
+                "
+                >
                     Save
                 </Button>
-                <Button onClick={onPublishWorkflow} disabled={isFlow.length < 1}>
+
+                <Button
+                    onClick={onPublishWorkflow}
+                    disabled={isFlow.length < 1}
+                    className="
+                    bg-blue-600
+                    text-white
+                    hover:bg-blue-500
+                    disabled:bg-blue-600/40
+                    disabled:text-white/50
+                    disabled:cursor-not-allowed
+                "
+                >
                     Publish
                 </Button>
+
             </div>
             {children}
         </div>
