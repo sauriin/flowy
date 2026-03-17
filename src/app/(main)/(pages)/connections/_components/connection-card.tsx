@@ -23,7 +23,7 @@ const ConnectionCard = ({
     // Map titles to redirect URLs safely
     const redirectMap: Record<string, string | undefined> = {
         Discord: process.env.NEXT_PUBLIC_DISCORD_REDIRECT,
-        Notion: process.env.NEXT_PUBLIC_NOTION_REDIRECT,
+        Notion: process.env.NEXT_PUBLIC_NOTION_AUTH_URL,
         Slack: process.env.NEXT_PUBLIC_SLACK_REDIRECT,
     };
 
@@ -53,7 +53,7 @@ const ConnectionCard = ({
 
             <div className="flex flex-col gap-2 p-4">
                 {connected?.[type] ? (
-                    <div className="rounded-lg border-2 border-primary px-3 py-2 text-sm font-bold text-primary">
+                    <div className="rounded-lg w-25 border-2 border-primary px-3 py-2 text-sm font-bold text-primary">
                         Connected
                     </div>
                 ) : (
@@ -70,3 +70,4 @@ const ConnectionCard = ({
 };
 
 export default ConnectionCard;
+//4 47 04

@@ -16,10 +16,12 @@ import {
     AccordionTrigger,
 } from '@/components/ui/accordion'
 import { useNodeConnections } from '@/providers/connection-provider'
-import { onDragStart } from '@/lib/editor-utils'
+import { fetchBotSlackChannels, onConnections, onDragStart } from '@/lib/editor-utils'
 import EditorCanvasIconHelper from './editor-canvas-card-icon-helper'
 import RenderConnectionAccordion from './render-connection-accordion'
 import OutputRenderAccordian from './output-render-accordian'
+import { useFlowyStore } from '@/store'
+import { useEffect } from 'react'
 
 type Props = {
     nodes: EditorNodeType[]
@@ -27,9 +29,20 @@ type Props = {
 
 const EditorCanvasSidebar = ({ nodes }: Props) => {
 
-    //WIP:COnnect DB Stuff
     const { state } = useEditor()
     const { nodeConnection } = useNodeConnections()
+    const { googleFile, setSlackChannels } = useFlowyStore()
+    useEffect(() => {
+        if (state) {
+            onConnections(nodeConnection, state, googleFile)
+        }
+    }, [state])
+
+    useEffect(() => {
+        if (nodeConnection.slackNode.slackAccessToken) {
+            fetchBotSlackChannels(nodeConnection.slackNode.slackAccessToken, setSlackChannels)
+        }
+    }, [nodeConnection])
     return (
         <aside className='h-full'>
             <Tabs

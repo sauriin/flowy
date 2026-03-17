@@ -14,6 +14,8 @@ import { toast } from 'sonner'
 import { ConnectionProviderProps } from '@/providers/connection-provider'
 import { onContentChange } from '@/lib/editor-utils'
 import GoogleFileDetails from './google-file-details'
+import GoogleDriveFile from './google-drive-files'
+import ActionButton from './action-button'
 
 export interface Option {
     value: string
@@ -118,13 +120,13 @@ const ContentBasedOnTitle = ({
                             </CardContent>
                         </Card>
                     )}
-                    {title === 'Google Drive' && <GoogleDriveFiles />}
-                    {/* <ActionButton
+                    {title === 'Google Drive' && <GoogleDriveFile />}
+                    <ActionButton
                         currentService={title}
                         nodeConnection={nodeConnection}
                         channels={selectedSlackChannels}
                         setChannels={setSelectedSlackChannels}
-                    /> */}
+                    />
                 </div>
             </Card>
         </AccordionContent>

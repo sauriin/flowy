@@ -55,7 +55,7 @@ const Settings = async (props: Props) => {
     }
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4">   
             <h1 className="p-6 text-4xl border-b bg-background">
                 Settings
             </h1>
