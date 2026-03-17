@@ -46,8 +46,5 @@ Flowy is a no-code workflow automation platform that integrates apps like Slack 
 ---
 
 ## 📸 Screenshots (Coming Soon)
-
-_Add your UI screenshots here to make your repo stand out_
-
 ---
 
