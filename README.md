@@ -51,10 +51,3 @@ _Add your UI screenshots here to make your repo stand out_
 
 ---
 
-## ⚙️ Getting Started
-
-### 1. Clone the repo
-
-```bash
-git clone https://github.com/your-username/flowy.git
-cd flowy
