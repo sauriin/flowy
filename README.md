@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Flowy – Automate Your Workflows Effortlessly
 
-## Getting Started
+🚧 **Status: Under Development**
 
-First, run the development server:
+Flowy is a no-code workflow automation platform that integrates apps like Slack and Notion, allowing users to create, manage, and automate workflows through an intuitive visual interface.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 🔗 Connect apps like **Slack** and **Notion**
+- ⚡ Automate repetitive tasks with workflows
+- 🎯 Visual workflow builder (drag & drop)
+- 🔐 Secure authentication with OAuth
+- 🔄 Real-time workflow execution
+- 📦 Scalable full-stack architecture
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🧠 How It Works
 
-To learn more about Next.js, take a look at the following resources:
+1. Connect your apps (Slack, Notion, etc.)
+2. Create workflows using a visual editor
+3. Define triggers and actions
+4. Let Flowy automate your tasks 🚀
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Tech Stack
 
-## Deploy on Vercel
+- **Frontend:** Next.js, React, TypeScript  
+- **Backend:** Next.js API Routes  
+- **Authentication:** Clerk  
+- **Integrations:** Slack API, Notion API  
+- **UI:** Tailwind CSS, ShadCN  
+- **Workflow Engine:** React Flow  
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔌 Integrations
+
+- ✅ Slack (OAuth + messaging automation)
+- ✅ Notion (API integration)
+- 🔜 More apps coming soon...
+
+---
+
+## 📸 Screenshots (Coming Soon)
+---
+
