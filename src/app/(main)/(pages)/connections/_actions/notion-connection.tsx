@@ -13,6 +13,13 @@ export const onNotionConnect = async (
     id: string
 ) => {
     'use server'
+    console.log("🔥 NOTION CONNECT CALLED:", {
+        access_token,
+        workspace_id,
+        workspace_name,
+        database_id,
+        id
+    })
     if (access_token) {
         //check if notion is connected
         const notion_connected = await db.notion.findFirst({
@@ -49,6 +56,7 @@ export const onNotionConnect = async (
         }
     }
 }
+
 export const getNotionConnection = async () => {
     const user = await currentUser()
     if (user) {

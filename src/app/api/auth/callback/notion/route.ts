@@ -5,7 +5,7 @@ import { Client } from '@notionhq/client';
 export async function GET(req: NextRequest) {
     const code = req.nextUrl.searchParams.get('code');
     const encoded = Buffer.from(
-        `${process.env.NOTION_CLIENT_ID}:${process.env.NOTION_API_SECRET}`
+        `${process.env.NOTION_CLIENT_ID}:${process.env.NOTION_CLIENT_SECRET}`
     ).toString('base64');
     if (code) {
         const response = await axios('https://api.notion.com/v1/oauth/token', {
@@ -49,4 +49,3 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.redirect('https://localhost:3000/connections');
 }
-// 5 24 23

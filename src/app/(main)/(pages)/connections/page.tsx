@@ -8,10 +8,14 @@ import { onDiscordConnect } from './_actions/disocrd-connection'
 import { currentUser } from '@clerk/nextjs/server'
 
 type Props = {
-    searchParams?: { [key: string]: string | undefined }
+    searchParams: Promise<{ [key: string]: string | undefined }>
 }
 
 const Connections = async (props: Props) => {
+
+    // ✅ FIX: properly await searchParams
+    const searchParams = await props.searchParams
+
     const {
         webhook_id,
         webhook_name,
@@ -31,32 +35,15 @@ const Connections = async (props: Props) => {
         bot_user_id,
         team_id,
         team_name,
-    } = props.searchParams ?? {
-        webhook_id: '',
-        webhook_name: '',
-        webhook_url: '',
-        guild_id: '',
-        guild_name: '',
-        channel_id: '',
-        access_token: '',
-        workspace_name: '',
-        workspace_icon: '',
-        workspace_id: '',
-        database_id: '',
-        app_id: '',
-        authed_user_id: '',
-        authed_user_token: '',
-        slack_access_token: '',
-        bot_user_id: '',
-        team_id: '',
-        team_name: '',
-    }
+    } = searchParams ?? {}
 
     const user = await currentUser()
     if (!user) return null
 
     const onUserConnections = async () => {
-        console.log(database_id)
+        console.log("DATABASE ID:", database_id)
+
+        // Discord
         await onDiscordConnect(
             channel_id!,
             webhook_id!,
@@ -66,6 +53,8 @@ const Connections = async (props: Props) => {
             guild_name!,
             guild_id!
         )
+
+        // Notion
         await onNotionConnect(
             access_token!,
             workspace_id!,
@@ -75,6 +64,7 @@ const Connections = async (props: Props) => {
             user.id
         )
 
+        // Slack
         await onSlackConnect(
             app_id!,
             authed_user_id!,
@@ -90,14 +80,15 @@ const Connections = async (props: Props) => {
 
         const user_info = await getUserData(user.id)
 
-        //get user info with all connections
+        console.log("USER CONNECTIONS:", user_info?.connections)
+
+        // map DB connections to UI state
         user_info?.connections.map((connection) => {
             connections[connection.type] = true
             return (connections[connection.type] = true)
         })
 
-        // Google Drive connection will always be true
-        // as it is given access during the login process
+        // Google Drive always true
         return { ...connections, 'Google Drive': true }
     }
 
@@ -108,10 +99,12 @@ const Connections = async (props: Props) => {
             <h1 className="sticky top-0 z-[10] flex items-center justify-between border-b bg-background/50 p-6 text-4xl backdrop-blur-lg">
                 Connections
             </h1>
+
             <div className="relative flex flex-col gap-4">
                 <section className="flex flex-col gap-4 p-6 text-muted-foreground">
                     Connect all your apps directly from here. You may need to connect
                     these apps regularly to refresh verification
+
                     {CONNECTIONS.map((connection) => (
                         <ConnectionCard
                             key={connection.title}
