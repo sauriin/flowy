@@ -13,7 +13,7 @@ export const onNotionConnect = async (
     id: string
 ) => {
     'use server'
-    console.log("🔥 NOTION CONNECT CALLED:", {
+    console.log("NOTION CONNECT CALLED:", {
         access_token,
         workspace_id,
         workspace_name,

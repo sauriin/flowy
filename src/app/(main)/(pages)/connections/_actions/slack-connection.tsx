@@ -85,9 +85,9 @@ const postMessageInSlackChannel = async (
     slackAccessToken: string,
     slackChannel: string,
     content: string
-): Promise<void> => {
+): Promise<boolean> => {
     try {
-        await axios.post(
+        const res = await axios.post(
             'https://slack.com/api/chat.postMessage',
             { channel: slackChannel, text: content },
             {
@@ -97,12 +97,16 @@ const postMessageInSlackChannel = async (
                 },
             }
         )
+
         console.log(`Message posted successfully to channel ID: ${slackChannel}`)
+
+        return res.data.ok
     } catch (error: any) {
         console.error(
             `Error posting message to Slack channel ${slackChannel}:`,
             error?.response?.data || error.message
         )
+        return false
     }
 }
 
@@ -116,11 +120,20 @@ export const postMessageToSlack = async (
     if (!selectedSlackChannels?.length) return { message: 'Channel not selected' }
 
     try {
-        selectedSlackChannels
-            .map((channel) => channel?.value)
-            .forEach((channel) => {
-                postMessageInSlackChannel(slackAccessToken, channel, content)
-            })
+        for (const channel of selectedSlackChannels) {
+            const success = await postMessageInSlackChannel(
+                slackAccessToken,
+                channel.value,
+                content
+            )
+
+            if (!success) {
+                return { message: `Failed on channel ${channel.label}` }
+            }
+
+            // delay to avoid Slack rate limit (429)
+            await new Promise((res) => setTimeout(res, 500))
+        }
     } catch (error) {
         return { message: 'Message could not be sent to Slack' }
     }

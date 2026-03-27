@@ -32,7 +32,7 @@ const ActionButton = ({
         if (response.message == 'success') {
             nodeConnection.setDiscordNode((prev: any) => ({
                 ...prev,
-                content: '',
+                content: '', 
             }))
         }
     }, [nodeConnection.discordNode])

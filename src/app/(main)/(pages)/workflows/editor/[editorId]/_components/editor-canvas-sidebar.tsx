@@ -32,6 +32,7 @@ const EditorCanvasSidebar = ({ nodes }: Props) => {
     const { state } = useEditor()
     const { nodeConnection } = useNodeConnections()
     const { googleFile, setSlackChannels } = useFlowyStore()
+
     useEffect(() => {
         if (state) {
             onConnections(nodeConnection, state, googleFile)
@@ -40,26 +41,29 @@ const EditorCanvasSidebar = ({ nodes }: Props) => {
 
     useEffect(() => {
         if (nodeConnection.slackNode.slackAccessToken) {
-            fetchBotSlackChannels(nodeConnection.slackNode.slackAccessToken, setSlackChannels)
+            fetchBotSlackChannels(
+                nodeConnection.slackNode.slackAccessToken,
+                setSlackChannels
+            )
         }
     }, [nodeConnection])
+
     return (
-        <aside className='h-full'>
+        <aside className='h-full flex flex-col overflow-hidden'>
             <Tabs
                 defaultValue="actions"
                 className="flex h-full flex-col overflow-hidden"
             >
                 <TabsList className="w-full bg-transparent p-0 h-12">
-
                     <TabsTrigger
                         value="actions"
                         className="
-      flex-1
-      rounded-none
-      border-b-2
-      border-transparent
-      text-gray-500
-      data-[state=active]:text-white"
+                            flex-1
+                            rounded-none
+                            border-b-2
+                            border-transparent
+                            text-gray-500
+                            data-[state=active]:text-white"
                     >
                         Actions
                     </TabsTrigger>
@@ -67,89 +71,106 @@ const EditorCanvasSidebar = ({ nodes }: Props) => {
                     <TabsTrigger
                         value="settings"
                         className="
-      flex-1
-      rounded-none
-      border-b-2
-      border-transparent
-      text-gray-500
-      data-[state=active]:text-white
-    "
+                            flex-1
+                            rounded-none
+                            border-b-2
+                            border-transparent
+                            text-gray-500
+                            data-[state=active]:text-white"
                     >
                         Settings
                     </TabsTrigger>
-
                 </TabsList>
 
-                <div className="h-px w-95 justify-center bg-gray-700" />
-                <TabsContent
-                    value="actions"
-                    className="flex flex-col gap-4 p-4"
-                >
-                    {Object.entries(EditorCanvasDefaultCardTypes)
-                        .filter(
-                            ([_, cardType]) =>
-                                (!nodes.length && cardType.type === 'Trigger') ||
-                                (nodes.length && cardType.type === 'Action')
-                        )
-                        .map(([cardKey, cardValue]) => (
-                            <Card
-                                key={cardKey}
-                                draggable
-                                className="w- cursor-grab w-85 border-black bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900"
-                                onDragStart={(event) =>
-                                    onDragStart(event, cardKey as EditorCanvasTypes)
-                                }
-                            >
-                                <CardHeader className="flex flex-row gap-4 p-4">
-                                    <EditorCanvasIconHelper type={cardKey as EditorCanvasTypes} />
-                                    <CardTitle className="text-md">
-                                        {cardKey}
-                                        <CardDescription>{cardValue.description}</CardDescription>
-                                    </CardTitle>
-                                </CardHeader>
-                            </Card>
-                        ))}
-                </TabsContent>
-                <TabsContent
-                    value="settings"
-                    className="flex-1 overflow-y-auto p-4"
-                >
-                    <div className="px-2 py-4 text-center text-xl font-bold">
-                        {state.editor.selectedNode.data.title}
-                    </div>
+                <div className="h-px w-full bg-gray-700" />
 
-                    <Accordion type="multiple">
-                        <AccordionItem
-                            value="Options"
-                            className="border-y px-2"
-                        >
-                            <AccordionTrigger className="no-underline!">
-                                Account
-                            </AccordionTrigger>
-                            <AccordionContent>
-                                {CONNECTIONS.map((connection) => (
-                                    <RenderConnectionAccordion
-                                        key={connection.title}
-                                        state={state}
-                                        connection={connection}
-                                    />
-                                ))}
-                            </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem
-                            value="Expected Output"
-                            className="px-2"
-                        >
-                            <AccordionTrigger className="no-underline!">
-                                Action
-                            </AccordionTrigger>
-                            <OutputRenderAccordian
-                                state={state}
-                                nodeConnection={nodeConnection}
-                            />
-                        </AccordionItem>
-                    </Accordion>
-                </TabsContent>
+                {/* ✅ SCROLL CONTAINER (IMPORTANT) */}
+                <div className="flex-1 overflow-hidden">
+
+                    {/* ACTIONS TAB */}
+                    <TabsContent
+                        value="actions"
+                        className="h-full overflow-y-auto flex flex-col gap-3 p-3 data-[state=inactive]:hidden"
+                    >
+                        {Object.entries(EditorCanvasDefaultCardTypes)
+                            .filter(
+                                ([_, cardType]) =>
+                                    (!nodes.length && cardType.type === 'Trigger') ||
+                                    (nodes.length && cardType.type === 'Action')
+                            )
+                            .map(([cardKey, cardValue]) => (
+                                <Card
+                                    key={cardKey}
+                                    draggable
+                                    className="cursor-grab w-full border-black bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900"
+                                    onDragStart={(event) =>
+                                        onDragStart(event, cardKey as EditorCanvasTypes)
+                                    }
+                                >
+                                    <CardHeader className="flex flex-row items-center gap-4 p-3">
+                                        <EditorCanvasIconHelper
+                                            type={cardKey as EditorCanvasTypes}
+                                        />
+
+                                        <div>
+                                            <CardTitle className="text-sm leading-tight">
+                                                {cardKey}
+                                            </CardTitle>
+
+                                            <CardDescription className="text-xs leading-tight">
+                                                {cardValue.description}
+                                            </CardDescription>
+                                        </div>
+                                    </CardHeader>
+                                </Card>
+                            ))}
+                    </TabsContent>
+
+                    {/* SETTINGS TAB */}
+                    <TabsContent
+                        value="settings"
+                        className="h-full overflow-y-auto flex flex-col gap-4 p-3 data-[state=inactive]:hidden"
+                    >
+                        <div className="px-2 py-4 text-center text-xl font-bold">
+                            {state.editor.selectedNode.data.title}
+                        </div>
+
+                        <Accordion type="multiple">
+                            <AccordionItem
+                                value="Options"
+                                className="border-y px-2"
+                            >
+                                <AccordionTrigger className="no-underline!">
+                                    Account
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    {CONNECTIONS.map((connection) => (
+                                        <RenderConnectionAccordion
+                                            key={connection.title}
+                                            state={state}
+                                            connection={connection}
+                                        />
+                                    ))}
+                                </AccordionContent>
+                            </AccordionItem>
+
+                            <AccordionItem
+                                value="Expected Output"
+                                className="px-1"
+                            >
+                                <AccordionTrigger className="no-underline!">
+                                    Action
+                                </AccordionTrigger>
+
+                                <OutputRenderAccordian
+                                    state={state}
+                                    nodeConnection={nodeConnection}
+                                />
+                            </AccordionItem>
+                        </Accordion>
+                    </TabsContent>
+
+                </div> {/* ✅ END SCROLL CONTAINER */}
             </Tabs>
         </aside>
     )

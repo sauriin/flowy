@@ -180,7 +180,7 @@ const EditorCanvas = (props: Props) => {
         >
             <ResizablePanel defaultSize={75} className="h-full overflow-hidden">
                 <div className="h-full w-full">
-                    <div className="relative h-full w-full min-h-150">
+                    <div className="relative h-full w-full min-h-157">
                         <ReactFlow
                             className="w-75"
                             onDrop={onDrop}
@@ -215,7 +215,7 @@ const EditorCanvas = (props: Props) => {
             <ResizableHandle />
             <ResizablePanel
                 defaultSize={25}
-                className="h-full overflow-hidden"
+                className="h-full overflow-hidden flex flex-col"
             >
                 {false ? (
                     <div className="absolute flex h-full w-full justify-center">

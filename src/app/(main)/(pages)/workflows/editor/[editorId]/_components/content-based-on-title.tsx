@@ -69,20 +69,18 @@ const ContentBasedOnTitle = ({
     // @ts-ignore
     const nodeConnectionType: any = nodeConnection[nodeMapper[title]]
     if (!nodeConnectionType) return <p>Not connected</p>
-
+    console.log("TITLE:", title)
+    console.log("NODE CONNECTION:", nodeConnectionType)
     const isConnected =
         title === 'Google Drive'
             ? !nodeConnection.isLoading
-            : !!nodeConnectionType[
-            `${title === 'Slack'
-                ? 'slackAccessToken'
+            : title === 'Slack'
+                ? !!nodeConnection.slackNode?.slackAccessToken
                 : title === 'Discord'
-                    ? 'webhookURL'
+                    ? !!nodeConnection.discordNode?.webhookURL
                     : title === 'Notion'
-                        ? 'accessToken'
-                        : ''
-            }`
-            ]
+                        ? !!nodeConnection.notionNode?.accessToken
+                        : false
 
     if (!isConnected) return <p>Not connected</p>
 
@@ -95,7 +93,7 @@ const ContentBasedOnTitle = ({
                         <CardDescription>{nodeConnectionType.guildName}</CardDescription>
                     </CardHeader>
                 )}
-                <div className="flex flex-col gap-3 px-6 py-3 pb-20">
+                <div className="flex flex-col gap-3 px-6 py-3 pb-1">
                     <p>{title === 'Notion' ? 'Values to be stored' : 'Message'}</p>
 
                     <Input

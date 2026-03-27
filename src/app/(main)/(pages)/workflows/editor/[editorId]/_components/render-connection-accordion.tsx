@@ -102,6 +102,8 @@ const RenderConnectionAccordion = ({
                                         onChange={setSelectedSlackChannels}
                                         defaultOptions={slackChannels}
                                         placeholder="Select channels"
+                                        className="bg-transparent"
+                                        badgeClassName="bg-zinc-800 text-white rounded-sm border border-zinc-600"
                                         emptyIndicator={
                                             <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
                                                 no results found.

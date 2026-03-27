@@ -1,8 +1,15 @@
 import { useModal } from '@/providers/modal-provider'
-import React, { use } from 'react'
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '../ui/drawer'
+import React from 'react'
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+} from '../ui/drawer'
 import { Button } from '../ui/button'
-import { Ghost } from 'lucide-react'
 
 type Props = {
     title: string
@@ -11,26 +18,37 @@ type Props = {
     defaultOpen?: boolean
 }
 
-const CustomModal = ({ children, title, subtitle, defaultOpen }: Props) => {
+const CustomModal = ({ children, title, subtitle }: Props) => {
     const { isOpen, setClose } = useModal()
     const handleClose = () => setClose()
+
     return (
-        <Drawer open={isOpen} onClose={handleClose}>
-            <DrawerContent>
+        <Drawer open={isOpen} onOpenChange={handleClose}>
+            <DrawerContent className="px-6 pb-6">
+
+                {/* Header */}
                 <DrawerHeader>
-                    <DrawerTitle className='text-center'>{title}</DrawerTitle>
-                    <DrawerDescription className='text-center flex flex-col items-center gap-4 h-96 overflow-scroll'>
+                    <DrawerTitle className="text-center text-xl">
+                        {title}
+                    </DrawerTitle>
+                    <DrawerDescription className="text-center">
                         {subtitle}
-                        {children}
                     </DrawerDescription>
                 </DrawerHeader>
-                <DrawerFooter className='flex flex-col gap-4 bg-background border-t border-t-muted'>
-                    <DrawerClose>
+
+                <div className="w-full max-w-4xl mx-auto">
+                    {children}
+                </div>
+
+                {/* Footer */}
+                <DrawerFooter className="flex flex-col gap-4 bg-background border-t border-t-muted">
+                    <DrawerClose asChild>
                         <Button variant="ghost" className="w-full" onClick={handleClose}>
                             Close
                         </Button>
                     </DrawerClose>
                 </DrawerFooter>
+
             </DrawerContent>
         </Drawer>
     )
