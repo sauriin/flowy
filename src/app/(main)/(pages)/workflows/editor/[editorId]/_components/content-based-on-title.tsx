@@ -1,7 +1,8 @@
+'use client'
 import { AccordionContent } from '@/components/ui/accordion'
 import { EditorState } from '@/providers/editor-provider'
-import { nodeMapper } from '@/lib/types'
-import React, { useEffect } from 'react'
+import { ConnectionTypes, nodeMapper } from '@/lib/types'
+import React, { useEffect, useState } from 'react'
 import {
     Card,
     CardContent,
@@ -16,19 +17,18 @@ import { onContentChange } from '@/lib/editor-utils'
 import GoogleFileDetails from './google-file-details'
 import GoogleDriveFile from './google-drive-files'
 import ActionButton from './action-button'
+import axios from 'axios'
 
 export interface Option {
     value: string
     label: string
     disable?: boolean
-    /** fixed option that can't be removed. */
     fixed?: boolean
-    /** Group the options by providing key. */
     [key: string]: string | boolean | undefined
 }
-interface GroupOption {
-    [key: string]: Option[]
-}
+
+// ✅ GLOBAL CACHE
+let driveCache: any[] = []
 
 type Props = {
     nodeConnection: ConnectionProviderProps
@@ -48,41 +48,69 @@ const ContentBasedOnTitle = ({
     setSelectedSlackChannels,
 }: Props) => {
     const { selectedNode } = newState.editor
-    const title = selectedNode.data.title
+    const title = selectedNode.data.title as ConnectionTypes
 
-    // useEffect(() => {
-    //     const reqGoogle = async () => {
-    //         const response: { data: { message: { files: any } } } = await axios.get(
-    //             '/api/drive'
-    //         )
-    //         if (response) {
-    //             console.log(response.data.message.files[0])
-    //             toast.message("Fetched File")
-    //             setFile(response.data.message.files[0])
-    //         } else {
-    //             toast.error('Something went wrong')
-    //         }
-    //     }
-    //     reqGoogle()
-    // }, [])
+    const [files, setFiles] = useState<any[]>(driveCache)
+    const [loading, setLoading] = useState(false)
+    const [search, setSearch] = useState('')
 
-    // @ts-ignore
-    const nodeConnectionType: any = nodeConnection[nodeMapper[title]]
-    if (!nodeConnectionType) return <p>Not connected</p>
-    console.log("TITLE:", title)
-    console.log("NODE CONNECTION:", nodeConnectionType)
+    // ✅ FETCH FILES (ONLY ONCE)
+    useEffect(() => {
+        if (title !== 'Google Drive') return
+        if (driveCache.length > 0) return
+
+        const fetchFiles = async () => {
+            try {
+                setLoading(true)
+                const res = await axios.get('/api/drive')
+
+                const fetched = res.data?.message?.files || []
+                driveCache = fetched
+                setFiles(fetched)
+            } catch (err) {
+                console.error(err)
+                toast.error('Failed to fetch files')
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchFiles()
+    }, [title])
+
+    // ✅ LOAD SELECTED FILE (PERSISTENCE)
+    useEffect(() => {
+        if (title !== 'Google Drive') return
+
+        const key = nodeMapper[title]
+        const saved = (nodeConnection as any)[key]?.selectedFile
+
+        if (saved) {
+            setFile(saved)
+        }
+    }, [title])
+
+    // ✅ SAFE ACCESS
+    const key = nodeMapper[title]
+    const nodeConnectionType = (nodeConnection as any)[key] || {}
+
     const isConnected =
         title === 'Google Drive'
             ? !nodeConnection.isLoading
             : title === 'Slack'
-                ? !!nodeConnection.slackNode?.slackAccessToken
-                : title === 'Discord'
-                    ? !!nodeConnection.discordNode?.webhookURL
-                    : title === 'Notion'
-                        ? !!nodeConnection.notionNode?.accessToken
-                        : false
+            ? !!nodeConnection.slackNode?.slackAccessToken
+            : title === 'Discord'
+            ? !!nodeConnection.discordNode?.webhookURL
+            : title === 'Notion'
+            ? !!nodeConnection.notionNode?.accessToken
+            : false
 
     if (!isConnected) return <p>Not connected</p>
+
+    // 🔍 FILTER
+    const filteredFiles = files.filter((f) =>
+        f.name.toLowerCase().includes(search.toLowerCase())
+    )
 
     return (
         <AccordionContent>
@@ -93,32 +121,100 @@ const ContentBasedOnTitle = ({
                         <CardDescription>{nodeConnectionType.guildName}</CardDescription>
                     </CardHeader>
                 )}
+
                 <div className="flex flex-col gap-3 px-6 py-3 pb-1">
-                    <p>{title === 'Notion' ? 'Values to be stored' : 'Message'}</p>
+                    {title !== 'Google Drive' && (
+                        <>
+                            <p>
+                                {title === 'Notion'
+                                    ? 'Values to be stored'
+                                    : 'Message'}
+                            </p>
 
-                    <Input
-                        type="text"
-                        value={nodeConnectionType.content}
-                        onChange={(event) => onContentChange(nodeConnection, title, event)}
-                    />
+                            <Input
+                                type="text"
+                                placeholder="Enter your message..."
+                                value={nodeConnectionType.content ?? ''}
+                                onChange={(event) =>
+                                    onContentChange(nodeConnection, title, event)
+                                }
+                            />
+                        </>
+                    )}
+                    {title === 'Google Drive' && (
+                        <div className="flex flex-col gap-3">
 
-                    {JSON.stringify(file) !== '{}' && title !== 'Google Drive' && (
-                        <Card className="w-full">
-                            <CardContent className="px-2 py-3">
-                                <div className="flex flex-col gap-4">
-                                    <CardDescription>Drive File</CardDescription>
-                                    <div className="flex flex-wrap gap-2">
-                                        <GoogleFileDetails
-                                            nodeConnection={nodeConnection}
-                                            title={title}
-                                            gFile={file}
-                                        />
-                                    </div>
+                            {/* ✅ LISTENER BACK */}
+                            <GoogleDriveFile />
+
+                            {/* 🔍 SEARCH */}
+                            <Input
+                                placeholder="Search files..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
+
+                            {/* 🔄 LOADING */}
+                            {loading && (
+                                <div className="h-20 bg-zinc-800 animate-pulse rounded-md" />
+                            )}
+
+                            {/* 📂 FILE LIST */}
+                            {!loading && (
+                                <div className="max-h-60 overflow-y-auto border border-zinc-700 rounded-md">
+                                    {filteredFiles.map((f) => {
+                                        const isSelected = file?.id === f.id
+
+                                        return (
+                                            <div
+                                                key={f.id}
+                                                className={`p-2 cursor-pointer flex gap-2 items-center rounded-md transition
+                                                ${
+                                                    isSelected
+                                                        ? 'bg-blue-600/20 border border-blue-500'
+                                                        : 'hover:bg-zinc-800'
+                                                }`}
+                                                onClick={() => {
+                                                    setFile(f)
+
+                                                    // ✅ SAVE SELECTION
+                                                    ;(nodeConnection as any)[key].selectedFile = f
+
+                                                    toast.success(`Selected: ${f.name}`)
+                                                }}
+                                            >
+                                                <span>
+                                                    {f.mimeType ===
+                                                    'application/vnd.google-apps.folder'
+                                                        ? '📁'
+                                                        : '📄'}
+                                                </span>
+
+                                                <span className="truncate">
+                                                    {f.name}
+                                                </span>
+                                            </div>
+                                        )
+                                    })}
                                 </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* ✅ SHOW FILE IN OTHER NODES */}
+                    {file && title !== 'Google Drive' && (
+                        <Card>
+                            <CardContent>
+                                <GoogleFileDetails
+                                    nodeConnection={nodeConnection}
+                                    title={title}
+                                    gFile={file}
+                                />
                             </CardContent>
                         </Card>
                     )}
-                    {title === 'Google Drive' && <GoogleDriveFile />}
+
+                    {/* ✅ ACTION BUTTON */}
                     <ActionButton
                         currentService={title}
                         nodeConnection={nodeConnection}

@@ -11,6 +11,7 @@ const isPublicRoute = createRouteMatcher([
     '/api/auth/callback/notion',
     '/api/auth/callback/slack',
     '/api/flow',
+    '/api/payment/success',
     '/api/cron/wait',
 ])
 

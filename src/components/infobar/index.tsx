@@ -12,40 +12,48 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { UserButton } from '@clerk/nextjs'
+import { useBilling } from '@/providers/billing-provider'
+import { set } from 'zod'
+import { onPaymentDetails } from '@/app/(main)/(pages)/billing/_actions/payment-connection'
 type Props = {}
 
 const InfoBar = (props: Props) => {
+    const { credits, tier, setCredits, setTier } = useBilling()
+    const onGetPayment = async () => {
+        const response = await onPaymentDetails()
 
+        if (response) {
+            const safeTier =
+                response.tier === 'Free' ||
+                    response.tier === 'Pro' ||
+                    response.tier === 'Unlimited'
+                    ? response.tier
+                    : 'Free'
 
+            setTier(safeTier)
+            setCredits(response.credits || '0')
+        }
+    }
+    useEffect(() => {
+        onGetPayment()
+    }, [])
     return (
         <div className="flex flex-row justify-end gap-6 items-center px-4 py-4 w-full bg-background border-b border-border">
-            <span
-                className="
-    flex items-center gap-2
-    px-4 py-2
-    rounded-full
-    bg-neutral-300 dark:bg-neutral-800
-    transition
-    focus-within:bg-neutral-300 dark:focus-within:bg-neutral-800
-  "
-            >
-                <Search className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
-
+            <span className="flex items-center gap-2 font-bold">
+                <p className="text-sm font-light text-gray-300">Credits</p>
+                {tier == 'Unlimited' ? (
+                    <span>Unlimited</span>
+                ) : (
+                    <span>
+                        {credits}/{tier == 'Free' ? '10' : tier == 'Pro' && '100'}
+                    </span>
+                )}
+            </span>
+            <span className="flex items-center rounded-full bg-muted px-4">
+                <Search />
                 <Input
                     placeholder="Quick Search"
-                    className="
-      bg-transparent
-      border-none
-      p-0
-      h-auto
-      text-sm
-      text-neutral-800 dark:text-neutral-200
-      placeholder:text-neutral-600 dark:placeholder:text-neutral-400
-      focus:outline-none
-      focus-visible:outline-none
-      focus-visible:ring-0
-      focus-visible:ring-offset-0
-    "
+                    className="border-none bg-transparent"
                 />
             </span>
 

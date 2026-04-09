@@ -1,8 +1,7 @@
-import { Card, CardContent, CardDescription } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { onAddTemplate } from '@/lib/editor-utils'
 import { ConnectionProviderProps } from '@/providers/connection-provider'
 import React from 'react'
-import { boolean } from 'zod'
 
 type Props = {
     nodeConnection: ConnectionProviderProps
@@ -11,35 +10,51 @@ type Props = {
 }
 
 const isGoogleFileNotEmpty = (file: any): boolean => {
-    return Object.keys(file).length > 0 && file.kind !== ''
+    return file && Object.keys(file).length > 0
+}
+
+// readable type
+const getReadableType = (mimeType: string) => {
+    if (mimeType === 'application/vnd.google-apps.folder') return 'Folder'
+    if (mimeType === 'application/vnd.google-apps.document') return 'Google Doc'
+    if (mimeType?.includes('pdf')) return 'PDF'
+    if (mimeType?.includes('image')) return 'Image'
+    if (mimeType?.includes('spreadsheet')) return 'Spreadsheet'
+    return 'File'
 }
 
 const GoogleFileDetails = ({ gFile, nodeConnection, title }: Props) => {
-    if (!isGoogleFileNotEmpty(gFile)) {
-        return null
-    }
+    if (!isGoogleFileNotEmpty(gFile)) return null
 
-    const details = ['kind', 'name', 'mineType']
-    if (title === 'Google Drive') {
-        details.push('id')
-    }
     return (
-        <div className='flex flex-wrap gap-2'>
-            <Card>
-                <CardContent className='flex felx-wrap gap-2 p-4'>
-                    {details.map((details) => (
-                        <div
-                            key={details}
-                            onClick={() => onAddTemplate(nodeConnection, title, gFile[details])
+        <div className="w-full">
+            <Card className="w-full border border-zinc-700 bg-zinc-900 hover:border-zinc-500 transition-all duration-200">
+                <CardContent className="flex items-center gap-3 p-4 sm:p-5">
+
+
+                    <div className="text-2xl shrink-0">
+                        {gFile.mimeType === 'application/vnd.google-apps.folder'
+                            ? '📁'
+                            : '📄'}
+                    </div>
+
+                    <div className="flex flex-col flex-1 min-w-0">
+
+                        <p
+                            className="font-medium text-white line-clamp-2 wrap-break-words cursor-pointer hover:underline"
+                            title={gFile.name}
+                            onClick={() =>
+                                onAddTemplate(nodeConnection, title, gFile.name)
                             }
-                            className='flex cursor-pointer gap-2 rounded-full bg-white px-3 py-1 text-gray-500'
                         >
-                            {details}:{''}
-                            <CardDescription className='text-black'>
-                                {gFile[details]}
-                            </CardDescription>
-                        </div>
-                    ))}
+                            {gFile.name}
+                        </p>
+
+                        {/* FILE TYPE */}
+                        <p className="text-xs sm:text-sm text-zinc-400 truncate">
+                            {getReadableType(gFile.mimeType)}
+                        </p>
+                    </div>
                 </CardContent>
             </Card>
         </div>

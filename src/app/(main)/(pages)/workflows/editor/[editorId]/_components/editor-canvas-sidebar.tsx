@@ -90,7 +90,7 @@ const EditorCanvasSidebar = ({ nodes }: Props) => {
                     {/* ACTIONS TAB */}
                     <TabsContent
                         value="actions"
-                        className="h-full overflow-y-auto flex flex-col gap-3 p-3 data-[state=inactive]:hidden"
+                        className="h-118 overflow-y-auto flex flex-col gap-3 p-3 data-[state=inactive]:hidden"
                     >
                         {Object.entries(EditorCanvasDefaultCardTypes)
                             .filter(
@@ -129,7 +129,7 @@ const EditorCanvasSidebar = ({ nodes }: Props) => {
                     {/* SETTINGS TAB */}
                     <TabsContent
                         value="settings"
-                        className="h-full overflow-y-auto flex flex-col gap-4 p-3 data-[state=inactive]:hidden"
+                        className="h-118 overflow-y-auto flex flex-col gap-4 p-3 data-[state=inactive]:hidden"
                     >
                         <div className="px-2 py-4 text-center text-xl font-bold">
                             {state.editor.selectedNode.data.title}

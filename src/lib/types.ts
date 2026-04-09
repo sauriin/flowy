@@ -79,9 +79,9 @@ export type EditorActions = {
         }
     }
 
-export const nodeMapper: Record<string, string> = {
+export const nodeMapper = {
     Notion: 'notionNode',
     Slack: 'slackNode',
     Discord: 'discordNode',
     'Google Drive': 'googleNode',
-}
+} as const
